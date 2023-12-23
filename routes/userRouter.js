@@ -29,10 +29,10 @@ userRouter
             const { email } = jwt.verify(token, JWT_SEC)
             const user = await User.findOne({email})
             if(user){
-                res.json({success:true})
+                res.json({success:true, message:"user is valid"})
             }
         } catch (error) {
-            res.json({success:false})
+            res.json({success:false, message:"user is invalid"})
         }
     })
     .post("/getUser", async (req, res) => {
@@ -42,10 +42,10 @@ userRouter
                 const user = await User.findOne({ email })
                 res.json({ user })
             } else {
-                res.json({ error: "provide email" })
+                res.json({ message: "email not provided" })
             }
         } catch (error) {
-            res.json({ error: error.message })
+            res.json({ error: error.message, message:error.message })
         }
 
     })
@@ -63,24 +63,30 @@ userRouter
             if (authTokenFromHeader) {
                 try {
                     const { email } = jwt.verify(authTokenFromHeader, JWT_SEC)
-                    res.json({ email, success: true, with: "jwt token" })
+                    res.json({ email, success: true, with: "jwt token", message:"login successfull" })
                 } catch (error) {
-                    res.json({ error: error.message })
+                    res.json({ error: error.message , message:"token invalid"})
                 }
                 return;
             }
-            user = users.find(item => item.email === req.body.data.email)
-            const isPasswordMatched = bcrypt.compareSync(req.body.data.password, user?.password)
-            if (isPasswordMatched) {
-                const { email } = user
-                const token = jwt.sign({ exp: Math.floor(Date.now() / 1000) + (60 * 60 * 12), email }, JWT_SEC)
-                res.json({ success: true, token })
-            } else {
-                res.json({ success: false, with: "traditional login" })
+            const user = users.find(item => item.email === req.body.data.email)
+            console.log({user,email : req.body.data.email});
+            if(user){
+                const isPasswordMatched = bcrypt.compareSync(req.body.data.password, user?.password)
+                if (isPasswordMatched) {
+                    const { email } = user
+                    const token = jwt.sign({ exp: Math.floor(Date.now() / 1000) + (60 * 60 * 12), email }, JWT_SEC)
+                    res.json({ success: true, token, message: "login successfull" })
+                } else {
+                    res.json({ success: false, with: "traditional login",message:"invalid credentials" })
+                }
+            }else{
+                res.json({ success: false, with: "traditional login",message:"invalid credentials" })
             }
+            
 
         } catch (error) {
-            res.json({ user, message: "error occured while getting user", error: error.message })
+            res.json({ message: "error occured while getting user", error: error.message, message: "invalid credentials" })
         }
     })
     .post("/loginWithOTP", async (req, res) => {
@@ -92,10 +98,10 @@ userRouter
             const { email } = user
             const token = jwt.sign({ exp: Math.floor(Date.now() / 1000) + (60 * 60 * 12), email }, JWT_SEC)
             if (user) {
-                res.json({ user, token })
+                res.json({ user, token, message:"login successfull" })
             }
         } catch (error) {
-            res.json({ error: error.message })
+            res.json({ error: error.message, message:"an error occurred" })
         }
     })
     .post("/signup", async (req, res) => {
@@ -111,7 +117,7 @@ userRouter
 
             res.status(201).json({ message: "user created successfully!!", token })
         } catch (error) {
-            res.json({ message: "a error occured while creating user!!", error: error.message })
+            res.json({ message: "an error occured", error: error.message })
         }
     })
     .put("/", async () => {
@@ -120,7 +126,7 @@ userRouter
     .delete("/:id", async (req, res) => {
         try {
             const response = await User.findByIdAndDelete(req.params.id)
-            if (response === null) { res.send("user does not exist") }
+            if (response === null) { res.json({message:"user does not exist"}) }
             else { res.json({ message: "user deleted successfully!!", response }) }
         } catch (error) {
             res.json({ message: "error occured while deleting user", error: error.message });
