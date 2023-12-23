@@ -23,7 +23,4 @@ server.use("/user",userRouter)
 server.post("/sendOTP",sendOTP)
 server.post("/sendMail",emailVerification)
 
-
-
-
 server.listen(port,()=>console.log('app listning on port number',port))
