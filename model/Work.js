@@ -41,6 +41,10 @@ const work = new Schema({
         type : String,
         required : true
     },
+    postedDate:{
+        type : Number,
+        required : true
+    }
 
 })
 const Work = mongoose.model("work",work)

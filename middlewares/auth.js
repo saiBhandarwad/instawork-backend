@@ -5,7 +5,7 @@ const SEC_KEY =process.env.JWT_SEC
 const auth = async (req, res, next) => {
     try {
         let authTokenFromHeader;
-    for (const key in req.body.headers) {
+    for (let key in req.body.headers) {
         if (key === 'token') {
             authTokenFromHeader = req.body.headers[key]
         }

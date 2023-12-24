@@ -14,29 +14,29 @@ workRouter
                     console.log("two => ",req.body.data.type);
                     const works = await Work.find(req.body.data.filterOBJECT).sort
                         ([[req.body.data.sortBy, req.body.data.type]])
-                    res.json({ works })
+                    res.json({success:true, works })
                     return
                 } 
                 console.log("three => ",req.body.data.sortBy);               
                 const works = await Work.find(req.body.data.filterOBJECT).sort
                     ([[req.body.data.sortBy, 'asc']])
-                res.json({ works })
+                res.json({success:true, works })
                 return
             }
             
             const works = await Work.find(req.body.data.filterOBJECT)
             res.json({ works })
         } catch (error) {
-            res.json({ error: error.message })
+            res.json({ success:false, error: error.message })
         }
     })
     .post('/postJob', async (req, res) => {
         try {
-            const { workType, salary, city, duration, startDate, endDate, detail, address, period } = req.body.data
+            const { workType, salary, city, duration, startDate, endDate, detail, address, period,postedDate } = req.body.data
             const { token } = req.body.headers
             const { email } = jwt.verify(token, JWT_SEC)
 
-            const res = await Work.create({
+            const response = await Work.create({
                 type: workType,
                 detail,
                 address,
@@ -46,17 +46,18 @@ workRouter
                 endDate,
                 salary: salary,
                 salaryPeriod: period,
-                user: email
+                user: email,
+                postedDate
             })
-            res.json({ res })
+            res.json({success:true, message:"work posted successfully!" ,response})
         } catch (error) {
-            res.json({ error })
+            res.json({success:false, message:"work posting failed" })
         }
     })
     .post('/works', async (req, res) => {
         try {
             const works = await Work.find()
-            res.json({ works })
+            res.json({ success:true, works })
         } catch (error) {
             console.log({ error: error.message });
         }
