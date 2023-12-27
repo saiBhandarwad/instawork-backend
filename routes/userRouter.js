@@ -29,7 +29,7 @@ userRouter
             const { email } = jwt.verify(token, JWT_SEC)
             const user = await User.findOne({email})
             if(user){
-                res.json({success:true, message:"user is valid"})
+                res.json({success:true, user, message:"user is valid"})
             }
         } catch (error) {
             res.json({success:false, message:"user is invalid"})
@@ -59,7 +59,6 @@ userRouter
                     authTokenFromHeader = req.body.headers[key]
                 }
             }
-            console.log({ authTokenFromHeader });
             if (authTokenFromHeader) {
                 try {
                     const { email } = jwt.verify(authTokenFromHeader, JWT_SEC)
@@ -75,7 +74,7 @@ userRouter
                 const isPasswordMatched = bcrypt.compareSync(req.body.data.password, user?.password)
                 if (isPasswordMatched) {
                     const { email } = user
-                    const token = jwt.sign({ exp: Math.floor(Date.now() / 1000) + (60 * 60 * 12), email }, JWT_SEC)
+                    const token = jwt.sign({ exp: Math.floor(Date.now() / 1000) + (60*60*24), email }, JWT_SEC)
                     res.json({ success: true, token, message: "login successfull" })
                 } else {
                     res.json({ success: false, with: "traditional login",message:"invalid credentials" })

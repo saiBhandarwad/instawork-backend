@@ -1,6 +1,7 @@
 const express = require('express')
 const jwt = require("jsonwebtoken")
 const Work = require('../model/Work')
+const SavedJobs = require('../model/SavedWorks')
 const workRouter = express.Router()
 const JWT_SEC = process.env.JWT_SEC
 
@@ -75,8 +76,44 @@ workRouter
             console.log({ error: error.message });
         }
     })
-    .get('/', async () => {
+    .post('/checkSavedJob', (req,res)=>{
+        try {
+            const { token } = req.body.headers
+            const { email } = jwt.verify(token, JWT_SEC)
+            const response = SavedJobs.findOne({_id:req.body.data.work._id,email})
+            res.json({success:true, message:"job saved successfully!", response})
+        } catch (error) {
+            res.json({success:false, message:error.message , response})
+        }
+    })
+    .post('/saveJob', (req,res)=>{
+        try {
+            const { token } = req.body.headers
+            const { email } = jwt.verify(token, JWT_SEC)
+            SavedJobs.create({...req.body.data.work,email})
+            res.json({success:true, message:"job saved successfully!"})
+        } catch (error) {
+            res.json({success:false, message:error.message})
+        }
+    })
+    .post('/getSavedJobs', async (req,res) => {
+        try {
+            const savedJobs = await SavedJobs.find({email:req.body.data.email})
+            console.log({savedJobs})
+            res.json({success : true, savedJobs})
+            
+        } catch (error) {
+            res.json({success:false, message:error.message})
+        }
+    })
+    .post('/getMyJobs', async (req,res) => {
+        try {
+            const myJobs = await Work.find({user:req.body.data.email})
+            res.json({success : true, myJobs})
 
+        } catch (error) {
+            res.json({success:false, message:error.message})
+        }
     })
 
 module.exports = workRouter

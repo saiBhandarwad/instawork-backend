@@ -4,7 +4,7 @@ const SEC_KEY =process.env.JWT_SEC
 
 const auth = async (req, res, next) => {
     try {
-        console.log({headers:req.body.headers});
+        console.log(req.body.headers);
         let authTokenFromHeader;
     for (let key in req.body.headers) {
         if (key === 'token') {
@@ -14,13 +14,11 @@ const auth = async (req, res, next) => {
     if(authTokenFromHeader){
         const {email} = jwt.verify(authTokenFromHeader,SEC_KEY)
         const user = await User.find({email}).select('-password')
-        // console.log({user});
         if(user.length === 0){
             res.send('please login using valid token')
             return;
         }
         req.userId = user[0]._id
-        // console.log({id1:req.userId, id2:user[0]._id});
         next()
         return;
     }else{
@@ -28,7 +26,7 @@ const auth = async (req, res, next) => {
             return;
     }
     } catch (error) {
-        console.log({error:error.message})
+        res.json({success:false, message:error.message})
     }
     
 }
