@@ -48,6 +48,10 @@ const savedJobs = new Schema({
     postedDate:{
         type : Number,
         required : true
+    },
+    id:{
+        type : String,
+        required : true
     }
 
 })

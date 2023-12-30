@@ -90,7 +90,11 @@ workRouter
         try {
             const { token } = req.body.headers
             const { email } = jwt.verify(token, JWT_SEC)
-            SavedJobs.create({...req.body.data.work,email})
+            let id = req.body.data.work._id
+            let work = req.body.data.work
+            delete work._id
+            console.log({work,id});
+            SavedJobs.create({...work,id ,email})
             res.json({success:true, message:"job saved successfully!"})
         } catch (error) {
             res.json({success:false, message:error.message})
