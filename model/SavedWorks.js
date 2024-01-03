@@ -41,6 +41,10 @@ const savedJobs = new Schema({
         type : Object,
         required : true
     },
+    saver:{
+        type : String,
+        required : true
+    },
     email:{
         type : String,
         required : true

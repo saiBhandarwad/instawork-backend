@@ -41,6 +41,10 @@ const work = new Schema({
         type : Object,
         required : true
     },
+    owner:{
+        type : String,
+        required : true
+    },
     postedDate:{
         type : Number,
         required : true
