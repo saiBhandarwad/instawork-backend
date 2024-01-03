@@ -71,6 +71,7 @@ workRouter
                 salary: salary,
                 salaryPeriod,
                 user: user,
+                owner:email,
                 postedDate
             })
             res.json({ success: true, message: "work posted successfully!", response })
@@ -104,7 +105,7 @@ workRouter
             let work = req.body.data.work
             delete work._id
             console.log({ work, id });
-            SavedJobs.create({ ...work, id, email })
+            SavedJobs.create({ ...work, id, saver:email })
             res.json({ success: true, message: "job saved successfully!" })
         } catch (error) {
             res.json({ success: false, message: error.message })

@@ -45,10 +45,6 @@ const savedJobs = new Schema({
         type : String,
         required : true
     },
-    email:{
-        type : String,
-        required : true
-    },
     postedDate:{
         type : Number,
         required : true
