@@ -38,7 +38,7 @@ const work = new Schema({
         required : true
     },
     user:{
-        type : String,
+        type : Object,
         required : true
     },
     postedDate:{

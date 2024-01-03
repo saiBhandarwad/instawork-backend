@@ -27,7 +27,7 @@ userRouter
         try {
             const token = req.body.data.token
             const { email } = jwt.verify(token, JWT_SEC)
-            const user = await User.findOne({email})
+            const user = await User.findOne({email}).select("-password")
             if(user){
                 res.json({success:true, user, message:"user is valid"})
             }

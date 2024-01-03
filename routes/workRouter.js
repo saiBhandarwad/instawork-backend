@@ -2,6 +2,7 @@ const express = require('express')
 const jwt = require("jsonwebtoken")
 const Work = require('../model/Work')
 const SavedJobs = require('../model/SavedWorks')
+const User = require("../model/User")
 const workRouter = express.Router()
 const JWT_SEC = process.env.JWT_SEC
 
@@ -54,9 +55,10 @@ workRouter
     })
     .post('/postJob', async (req, res) => {
         try {
-            const { workType, salary, city, duration, startDate, endDate, detail, address, period, postedDate } = req.body.data
+            const { workType, salary, city, duration, startDate, endDate, detail, address, salaryPeriod, postedDate } = req.body.data
             const { token } = req.body.headers
             const { email } = jwt.verify(token, JWT_SEC)
+            const user = await User.findOne({email}).select("-password")
 
             const response = await Work.create({
                 type: workType,
@@ -67,13 +69,13 @@ workRouter
                 startDate,
                 endDate,
                 salary: salary,
-                salaryPeriod: period,
-                user: email,
+                salaryPeriod,
+                user: user,
                 postedDate
             })
             res.json({ success: true, message: "work posted successfully!", response })
         } catch (error) {
-            res.json({ success: false, message: "work posting failed" })
+            res.json({ success: false, message: "work posting failed", error:error.message })
         }
     })
     .post('/works', async (req, res) => {
@@ -141,6 +143,19 @@ workRouter
             res.json({ success: true, myJobs })
         } catch (error) {
             res.json({ success: false, message:error.message })
+        }
+    })
+    .patch('/updateWork', async(req, res) =>{
+        try {
+            const { workType, salary, city, duration, startDate, endDate, detail, address, period, salaryPeriod, _id } = req.body.data
+            console.log({workType, salary, city, duration, startDate, endDate, detail, address, period, _id});
+            const response = await Work.findByIdAndUpdate(_id,{ 
+                type: workType, salary, city, duration, startDate, endDate, detail, address, period, salaryPeriod, _id
+            })
+            
+            res.json({ success: true, message: "work updated successfully!", response })
+        } catch (error) {
+            res.json({ success: false, message: "work updation failed", error:error.message })
         }
     })
 module.exports = workRouter
