@@ -69,7 +69,7 @@ userRouter
                 return;
             }
             const user = users.find(item => item.email === req.body.data.email)
-            console.log({user,email : req.body.data.email});
+            //console.log({user,email : req.body.data.email});
             if(user){
                 const isPasswordMatched = bcrypt.compareSync(req.body.data.password, user?.password)
                 if (isPasswordMatched) {
@@ -91,9 +91,9 @@ userRouter
     .post("/loginWithOTP", async (req, res) => {
         try {
             const { phone } = req.body.data
-            // console.log({ phone });
+            // //console.log({ phone });
             const user = await User.findOne({ phone }).select("-password")
-            // console.log({ user });
+            // //console.log({ user });
             const { email } = user
             const token = jwt.sign({ exp: Math.floor(Date.now() / 1000) + (60 * 60 * 12), email }, JWT_SEC)
             if (user) {
@@ -107,7 +107,7 @@ userRouter
         try {
             const { firstName, lastName, email, phone, password } = req.body.data
             const token = jwt.sign({ exp: Math.floor(Date.now() / 1000) + (60 * 60 * 12), email }, JWT_SEC)
-            // console.log(req.body.data);
+            // //console.log(req.body.data);
             const hashedPassword = await bcrypt.hash(password, 10)
 
             await User.create({

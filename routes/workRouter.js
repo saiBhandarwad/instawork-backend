@@ -40,7 +40,7 @@ workRouter
                     res.json({ success: true, works })
                     return
                 }
-                console.log("three => ", req.body.data.sortBy);
+                //console.log("three => ", req.body.data.sortBy);
                 const works = await Work.find(req.body.data.filterOBJECT).sort
                     ([[req.body.data.sortBy, 'asc']])
                 res.json({ success: true, works })
@@ -84,7 +84,7 @@ workRouter
             const works = await Work.find().sort([["postedDate", "desc"]])
             res.json({ success: true, works })
         } catch (error) {
-            console.log({ error: error.message });
+            //console.log({ error: error.message });
         }
     })
     .post('/checkSavedJob', (req, res) => {
@@ -104,7 +104,7 @@ workRouter
             let id = req.body.data.work._id
             let work = req.body.data.work
             delete work._id
-            console.log({ work, id });
+            //console.log({ work, id });
             SavedJobs.create({ ...work, id, saver:email })
             res.json({ success: true, message: "job saved successfully!" })
         } catch (error) {
@@ -113,7 +113,7 @@ workRouter
     })
     .post('/getSavedJobs', async (req, res) => {
         try {
-            const savedJobs = await SavedJobs.find({ email: req.body.data.email }).sort([["postedDate", "desc"]])
+            const savedJobs = await SavedJobs.find({ saver: req.body.data.email }).sort([["postedDate", "desc"]])
             console.log({ savedJobs })
             res.json({ success: true, savedJobs })
 
@@ -123,7 +123,7 @@ workRouter
     }) 
     .post('/getMyJobs', async (req, res) => {
         try {
-            const myJobs = await Work.find({ user: req.body.data.email }).sort([["postedDate", "desc"]])
+            const myJobs = await Work.find({ owner: req.body.data.email }).sort([["postedDate", "desc"]])
             res.json({ success: true, myJobs })
 
         } catch (error) {
@@ -132,8 +132,10 @@ workRouter
     })
     .post('/removeFromSavedJob', async(req, res) =>{
         try {
-            const myJobs = await SavedJobs.deleteOne({ _id: req.body.data.work._id })
-            res.json({ success: true, myJobs })
+            const {email} = jwt.verify(req.body.data.token,JWT_SEC)
+            console.log({email, id:req.body.data.work._id});
+            const response = await SavedJobs.deleteOne({ id: req.body.data.work.id,saver:email })
+            res.json({ success: true, response })
         } catch (error) {
             res.json({ success: false, message:error.message })
         }
@@ -149,7 +151,7 @@ workRouter
     .patch('/updateWork', async(req, res) =>{
         try {
             const { workType, salary, city, duration, startDate, endDate, detail, address, period, salaryPeriod, _id } = req.body.data
-            console.log({workType, salary, city, duration, startDate, endDate, detail, address, period, _id});
+            //console.log({workType, salary, city, duration, startDate, endDate, detail, address, period, _id});
             const response = await Work.findByIdAndUpdate(_id,{ 
                 type: workType, salary, city, duration, startDate, endDate, detail, address, period, salaryPeriod, _id
             })

@@ -11,7 +11,7 @@ const emailVerification = async(req,res) =>{
             }
         });
         const OTP = Math.round(Math.random()*10000)
-        console.log({OTP,body:req.body});
+        //console.log({OTP,body:req.body});
         const info = await transporter.sendMail({
             from: "instaworker.com@gmail.com" , // sender address
             to: req.body.data.email, // list of receivers

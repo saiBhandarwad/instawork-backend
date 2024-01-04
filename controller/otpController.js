@@ -15,7 +15,7 @@ sendOTP = (req,res) => {
     }).then(()=>{
         res.json({OTP,success:true})
     }).catch((err)=>{
-        console.log({err});
+        //console.log({err});
         res.json({err,success:false})
     })
 }

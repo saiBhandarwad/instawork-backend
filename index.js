@@ -15,7 +15,7 @@ connectToMongo(process.env.MONGO_URL)
 server.use(express.json())
 server.use(cors({
     origin:["http://localhost:5173",
-    "https://instawork-frontend.vercel.app"]
+    "https://instawork-job-hunting-site.vercel.app"]
 }))
 
 server.use("/work",auth,workRouter)
