@@ -154,7 +154,7 @@ workRouter
             const { workType, salary, city, duration, startDate, endDate, detail, address, period, salaryPeriod, _id } = req.body.data
             //console.log({workType, salary, city, duration, startDate, endDate, detail, address, period, _id});
             const response = await Work.findByIdAndUpdate(_id,{ 
-                type: workType, salary, city, duration, startDate, endDate, detail, address, period, salaryPeriod, _id
+                type: workType.charAt(0).toUpperCase() + workType.slice(1), salary, city : this.city.charAt(0).toUpperCase()+this.city.slice(1), duration, startDate, endDate, detail, address, period, salaryPeriod, _id
             })
             
             res.json({ success: true, message: "work updated successfully!", response })
