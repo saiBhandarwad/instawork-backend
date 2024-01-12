@@ -4,6 +4,7 @@ const SEC_KEY =process.env.JWT_SEC
 
 const auth = async (req, res, next) => {
     try {
+        console.log({req});
         let authTokenFromHeader;
     for (let key in req.body.headers) {
         if (key === 'token') {

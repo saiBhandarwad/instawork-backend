@@ -20,6 +20,11 @@ server.use(cors({
 
 server.use("/work",auth,workRouter)
 server.use("/user",userRouter)
+server.get("/works",(req,res)=>{
+    console.log({req});
+    let works =  [{type:"painting"},{type:"security"},{type:"data-entry"}]
+    res.send(works)
+})
 server.post("/sendOTP",sendOTP)
 server.post("/sendMail",emailVerification)
 
