@@ -107,6 +107,11 @@ userRouter
         try {
             const { firstName, lastName, email, phone, password } = req.body.data
             const token = jwt.sign({ exp: Math.floor(Date.now() / 1000) + (60 * 60 * 12), email }, JWT_SEC)
+            const user = await User.find({ phone })
+            if(user.length !== 0){
+                res.status(201).json({success:false, message: "phone number is already exist"})
+                return
+            }
             // //console.log(req.body.data);
             const hashedPassword = await bcrypt.hash(password, 10)
 
@@ -116,7 +121,7 @@ userRouter
 
             res.status(201).json({ message: "user created successfully!!", token })
         } catch (error) {
-            res.json({ message: "an error occured", error: error.message })
+            res.json({ message: error.message, error: error.message })
         }
     })
     .put("/", async () => {

@@ -31,7 +31,7 @@ const emailCheck = async(req,res,next) => {
     const {email} = req.body.data
     const user = await User.find({ email })
     console.log({user});
-    if(user){
+    if(user.length !== 0){
         res.send({success:false, message:"email already exist"})
         return
     }else{
@@ -42,8 +42,8 @@ const mobileCheck = async(req,res,next) => {
     const {phone} = req.body.data
     const user = await User.find({ phone })
     console.log({user});
-    if(user){
-        res.send({success:false, message:"mobile number already exist"})
+    if(user.length === 0){
+        res.send({success:false, message:"mobile number is not registered or not verified"})
         return
     }else{
         next()
