@@ -119,7 +119,7 @@ userRouter
                 firstName, lastName, email, phone, password: hashedPassword
             })
 
-            res.status(201).json({ message: "user created successfully!!", token })
+            res.status(201).json({ success:true, message: "user created successfully!!", token })
         } catch (error) {
             res.json({ message: error.message, error: error.message })
         }
